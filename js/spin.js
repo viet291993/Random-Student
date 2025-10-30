@@ -91,6 +91,8 @@ window.spinOnce = async function () {
         if (winNode) {
           winNode.classList.add("win");
           confettiAtElement?.(winNode);
+          // Fire multiple fireworks around screen
+          fireworksAroundScreen?.(5);
           setTimeout(() => winNode.classList.remove("win"), 2500);
         }
         showResult(picked);

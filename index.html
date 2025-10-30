@@ -91,7 +91,9 @@
       <div class="modal-dialog glass glass-strong">
         <button id="modalClose" class="modal-close">×</button>
         <div class="modal-body">
-          <img id="resultImage" class="result-image" alt="selected" />
+          <div class="avatar win" style="width: 160px; height: 160px;">
+            <img id="resultImage" class="result-image" alt="selected" />
+          </div>
           <h2 id="resultName" class="result-name"></h2>
           <div class="modal-actions">
             <button id="btnSpeak" class="btn btn-primary liquid-glass">
@@ -198,7 +200,7 @@
         <div class="panel-group">
           <div class="panel-group-title">Loại trừ</div>
           <label class="field field-row">
-            <span>Loại khỏi vòng sau khi chọn</span>
+            <span>Loại khỏi danh sách sau khi được chọn</span>
             <input
               id="cfgExcludeAfterPick"
               type="checkbox"
@@ -239,40 +241,37 @@
     <!-- Student list import/export (panel for danh sách ảnh) -->
     <div id="studentsPanel" class="side-panel glass glass-strong" hidden>
       <div class="panel-header">
-        <h3>Danh sách ảnh</h3>
+        <h3>Danh sách</h3>
         <button id="studentsClose" class="modal-close">×</button>
       </div>
       <div class="panel-body">
         <label class="field">
-          <span
-            >Danh sách ảnh (mỗi dòng là 1 tên file, ví dụ: "Nguyễn Văn
-            A.jpg")</span
-          >
           <textarea
             id="cfgStudentList"
-            rows="12"
+            rows="30"
             placeholder="Ví dụ:
-Nguyễn Văn A.jpg
+Nguyễn Văn A
 Trần Thị B.png"
           ></textarea>
+          <div class="field-hint">
+            <small>
+              Số mục: <b id="studentCount">0</b>
+            </small>
+          </div>
+          <div class="panel-actions">
+            <button id="cfgStudentsApply" class="btn btn-primary liquid-glass">
+              Áp dụng
+            </button>
+          </div>
+          <div class="field-hint">
+            <!-- Plain helper text to make usage easier -->
+            <small>
+              - Mỗi dòng nhập <b>một</b> tên. Có thể kèm phần mở rộng (.jpg/.png/.jpeg...) hoặc chỉ nhập <i>tên</i>.<br />
+              - Nếu trùng với ảnh trong thư mục <code>images/</code> (ví dụ: <code>images/Nguyễn Văn A.jpg</code>) thì hiển thị ảnh.<br />
+              - Có thể dán trực tiếp danh sách từ Excel/Google Sheets (một cột, mỗi ô một dòng).
+            </small>
+          </div>
         </label>
-        <div class="panel-actions">
-          <button id="btnImportList" class="btn btn-secondary liquid-glass">
-            Nhập (.txt/.json)
-          </button>
-          <button id="btnExportList" class="btn btn-secondary liquid-glass">
-            Xuất danh sách
-          </button>
-          <input id="fileImportInput" type="file" accept=".txt,.json" hidden />
-        </div>
-        <div class="panel-actions">
-          <button id="cfgStudentsApply" class="btn btn-primary liquid-glass">
-            Áp dụng danh sách
-          </button>
-          <button id="cfgStudentsClear" class="btn btn-danger liquid-glass">
-            Xóa danh sách tùy chỉnh
-          </button>
-        </div>
       </div>
     </div>
 

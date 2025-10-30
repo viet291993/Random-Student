@@ -41,6 +41,7 @@ window.DOM = {
   resultName: document.getElementById("resultName"),
   btnHideToolbar: document.getElementById("btnHideToolbar"),
   btnShowToolbar: document.getElementById("btnShowToolbar"),
+  studentCount: document.getElementById("studentCount"),
 };
 
 // UI state
@@ -169,7 +170,76 @@ window.hideModal = function () {
   window.DOM.modal.hidden = true;
 };
 window.showResult = function (item) {
+  // Xóa fallback cũ nếu có
+  if (window.DOM.resultImage.nextSibling && window.DOM.resultImage.nextSibling.classList?.contains('result-fallback')) {
+    window.DOM.resultImage.nextSibling.remove();
+  }
+  // Reset lại ảnh
+  window.DOM.resultImage.style.display = '';
   window.DOM.resultImage.src = item.url;
+  window.DOM.resultImage.alt = item.name;
+  window.DOM.resultImage.onerror = function () {
+    // Ẩn ảnh, show SVG trophy
+    this.style.display = 'none';
+    let fb = document.createElement('div');
+    fb.className = 'result-fallback';
+    fb.style.display = 'flex';
+    fb.style.justifyContent = 'center';
+    fb.style.alignItems = 'center';
+    fb.style.width = '160px';
+    fb.style.height = '160px';
+    fb.style.margin = '0 auto 12px auto';
+    fb.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 128 128" style="display:block;margin:auto;">
+        <defs>
+          <radialGradient id="goldGrad" cx="50%" cy="40%" r="70%">
+            <stop offset="0%" stop-color="#fff6b3"/>
+            <stop offset="45%" stop-color="#ffe066"/>
+            <stop offset="85%" stop-color="#ffd000"/>
+            <stop offset="100%" stop-color="#caa105"/>
+          </radialGradient>
+          <linearGradient id="baseGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#b78a28"/>
+            <stop offset="100%" stop-color="#8a6a20"/>
+          </linearGradient>
+          <linearGradient id="stemGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#ffe066"/>
+            <stop offset="100%" stop-color="#e0b800"/>
+          </linearGradient>
+          <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.25"/>
+          </filter>
+        </defs>
+        <!-- shadow ellipse -->
+        <ellipse cx="64" cy="114" rx="34" ry="6" fill="#000" opacity="0.15"/>
+        <!-- handles -->
+        <path d="M20,36 q-8,14 4,28 q9,10 26,10" fill="none" stroke="#e6c100" stroke-width="6" stroke-linecap="round"/>
+        <path d="M108,36 q8,14 -4,28 q-9,10 -26,10" fill="none" stroke="#e6c100" stroke-width="6" stroke-linecap="round"/>
+        <!-- cup body -->
+        <g filter="url(#shadow)">
+          <ellipse cx="64" cy="28" rx="34" ry="10" fill="url(#goldGrad)" stroke="#bfa642" stroke-width="2"/>
+          <path d="M30 30 q0 34 34 44 q34-10 34-44 z" fill="url(#goldGrad)" stroke="#bfa642" stroke-width="2"/>
+        </g>
+        <!-- stem -->
+        <rect x="52" y="74" width="24" height="12" rx="4" fill="url(#stemGrad)" stroke="#bfa642" stroke-width="2"/>
+        <rect x="56" y="64" width="16" height="12" rx="3" fill="#ffd84d" stroke="#bfa642" stroke-width="1.5"/>
+        <!-- base -->
+        <g filter="url(#shadow)">
+          <rect x="40" y="92" width="48" height="10" rx="3" fill="url(#baseGrad)"/>
+          <rect x="34" y="102" width="60" height="8" rx="3" fill="#6b5120"/>
+        </g>
+        <!-- highlights -->
+        <path d="M44,40 q8,-10 18,-12" stroke="#fff9d1" stroke-width="3" fill="none" opacity="0.9" stroke-linecap="round"/>
+        <path d="M84,46 q-6,8 -14,12" stroke="#fff3a0" stroke-width="2" fill="none" opacity="0.7" stroke-linecap="round"/>
+        <!-- sparkles -->
+        <g fill="#fff6b3" opacity="0.9">
+          <path d="M18 28 l3 5 l-5 3 l5 3 l-3 5 l5 -3 l3 5 l3 -5 l5 3 l-3 -5 l5 -3 l-5 -3 l3 -5 l-5 3 l-3 -5 l-3 5 z" transform="scale(0.15) translate(300, 150)"/>
+          <path d="M18 28 l3 5 l-5 3 l5 3 l-3 5 l5 -3 l3 5 l3 -5 l5 3 l-3 -5 l5 -3 l-5 -3 l3 -5 l-5 3 l-3 -5 l-3 5 z" transform="scale(0.12) translate(760, 120)"/>
+        </g>
+      </svg>
+    `;
+    window.DOM.resultImage.parentNode.insertBefore(fb, window.DOM.resultImage.nextSibling);
+  };
   window.DOM.resultName.textContent = item.name;
   showModal();
   if (window.AppConfig?.tts?.enabled) tts.speak(item.name);
@@ -239,3 +309,30 @@ if (window.DOM.voiceSelect) {
     window.speechSynthesis.addEventListener("voiceschanged", populateVoices);
   }
 }
+
+// Global handler: gracefully handle broken IMG resources (e.g., net::ERR_FILE_NOT_FOUND)
+// Hide the broken image and add a text fallback if not already handled locally
+window.addEventListener(
+  "error",
+  (event) => {
+    const target = event && event.target;
+    if (!target || !(target instanceof HTMLElement)) return;
+    if (target.tagName !== "IMG") return;
+    // Skip result image (handled specially in showResult)
+    if (target.id === "resultImage") return;
+    // Avoid duplicate injection
+    if (target.dataset && target.dataset._handledError === "1") return;
+    target.dataset._handledError = "1";
+    try {
+      const parent = target.parentElement;
+      if (!parent) return;
+      if (parent.querySelector && parent.querySelector('.avatar-fallback')) return;
+      target.style.display = "none";
+      const fb = document.createElement("div");
+      fb.className = "avatar-fallback";
+      fb.textContent = target.getAttribute("alt") || "Không tìm thấy";
+      parent.appendChild(fb);
+    } catch (_) {}
+  },
+  true
+);

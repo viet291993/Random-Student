@@ -96,6 +96,14 @@ window.bindPanels = function () {
     const override = loadStudentsOverride();
     window.DOM.cfgStudentList.value = override ? override.join("\n") : "";
     window.DOM.studentsPanel.hidden = false;
+    // Enhance textarea UX khi mở panel: font monospace nhẹ, autosize và cập nhật đếm
+    try {
+      if (window.DOM.cfgStudentList) {
+        window.DOM.cfgStudentList.style.fontFamily = 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace';
+        autoSizeStudentTextarea();
+        updateStudentCount();
+      }
+    } catch (_) {}
   });
   window.DOM.studentsClose?.addEventListener("click", () => {
     window.DOM.studentsPanel.hidden = true;
@@ -105,68 +113,40 @@ window.bindPanels = function () {
       .split(/\r?\n/)
       .map((s) => s.trim())
       .filter((s) => s.length > 0);
-    const valid = lines.filter((s) => /\.[a-zA-Z0-9]{2,5}$/.test(s));
+    // Chấp nhận mọi tên (có hoặc không có phần mở rộng)
+    const valid = lines; // Không cần filter bằng regex nữa
     saveStudentsOverride(valid);
-    students = buildStudents();
+    window.students = buildStudents();
     excluded = excluded.filter((id) => valid.includes(id));
     saveExcluded(excluded);
     lastRemoved = null;
     render();
   });
-  window.DOM.cfgStudentsClear?.addEventListener("click", () => {
-    clearStudentsOverride();
-    cfgStudentList.value = "";
-    students = buildStudents();
-    render();
-  });
-  window.DOM.btnImportList?.addEventListener("click", () => {
-    fileImportInput?.click();
-  });
-  window.DOM.fileImportInput?.addEventListener("change", (e) => {
-    const file = e.target.files && e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const text = String(reader.result || "");
-        let list = [];
-        if (file.name.toLowerCase().endsWith(".json")) {
-          const arr = JSON.parse(text);
-          if (Array.isArray(arr)) list = arr;
-        } else {
-          list = text
-            .split(/\r?\n/)
-            .map((s) => s.trim())
-            .filter((s) => s.length > 0);
-        }
-        cfgStudentList.value = list.join("\n");
-      } catch (_) {}
-    };
-    reader.readAsText(file, "utf-8");
-    e.target.value = "";
-  });
-  window.DOM.btnExportList?.addEventListener("click", () => {
-    let lines = [];
-    const override = loadStudentsOverride();
-    if (override && override.length) lines = override;
-    else if (cfgStudentList?.value) {
-      lines = cfgStudentList.value
-        .split(/\r?\n/)
-        .map((s) => s.trim())
-        .filter((s) => s.length > 0);
-    } else {
-      lines = [...STUDENT_IMAGES];
-    }
-    const content = lines.join("\n");
-    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "students.txt";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+
+  // ---- Students textarea live helpers ----
+  function getStudentLines() {
+    return (cfgStudentList.value || "")
+      .split(/\r?\n/)
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+  }
+
+  function updateStudentCount() {
+    if (!window.DOM.studentCount) return;
+    const count = getStudentLines().length;
+    window.DOM.studentCount.textContent = String(count);
+  }
+
+  function autoSizeStudentTextarea() {
+    if (!window.DOM.cfgStudentList) return;
+    const ta = window.DOM.cfgStudentList;
+    ta.style.height = 'auto';
+    ta.style.height = Math.min(400, Math.max(160, ta.scrollHeight)) + 'px';
+  }
+
+  window.DOM.cfgStudentList?.addEventListener('input', () => {
+    autoSizeStudentTextarea();
+    updateStudentCount();
   });
 
   // ---- Live preview avatar size ----

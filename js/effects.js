@@ -71,4 +71,49 @@
       confettiAt(window.innerWidth / 2, window.innerHeight / 2);
     }
   };
+
+  // Fire multiple fireworks around the screen
+  window.fireworksAroundScreen = function (count = 8) {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    
+    // Generate positions around screen edges
+    const positions = [];
+    for (let i = 0; i < count; i++) {
+      const side = Math.floor(Math.random() * 4); // 0: top, 1: right, 2: bottom, 3: left
+      let x, y;
+      
+      switch (side) {
+        case 0: // top
+          x = Math.random() * width;
+          y = Math.random() * (height * 0.2);
+          break;
+        case 1: // right
+          x = width - Math.random() * (width * 0.2);
+          y = Math.random() * height;
+          break;
+        case 2: // bottom
+          x = Math.random() * width;
+          y = height - Math.random() * (height * 0.2);
+          break;
+        case 3: // left
+          x = Math.random() * (width * 0.2);
+          y = Math.random() * height;
+          break;
+      }
+      
+      positions.push({ x, y });
+    }
+    
+    // Fire fireworks with staggered timing
+    positions.forEach((pos, index) => {
+      setTimeout(() => {
+        confettiAt(pos.x, pos.y, {
+          count: 100,
+          duration: 1200,
+          spread: Math.PI * 2,
+        });
+      }, index * 150); // Stagger by 150ms
+    });
+  };
 })();
