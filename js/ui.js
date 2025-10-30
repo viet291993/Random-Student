@@ -10,6 +10,8 @@ window.DOM = {
   btnConfig: document.getElementById("btnConfig"),
   btnStudents: document.getElementById("btnStudents"),
   btnShortcuts: document.getElementById("btnShortcuts"),
+  btnTTS: document.getElementById("btnTTS"),
+  voiceSelect: document.getElementById("voiceSelect"),
   sidePanel: document.getElementById("configPanel"),
   cfgClose: document.getElementById("configClose"),
   cfgSave: document.getElementById("cfgSave"),
@@ -170,7 +172,7 @@ window.showResult = function (item) {
   window.DOM.resultImage.src = item.url;
   window.DOM.resultName.textContent = item.name;
   showModal();
-  tts.speak(item.name);
+  if (window.AppConfig?.tts?.enabled) tts.speak(item.name);
 };
 
 // Event hide/show toolbar - presentation mode
@@ -185,4 +187,55 @@ if (window.DOM.btnShowToolbar) {
     document.body.classList.remove("presentation-hide-toolbar");
     window.DOM.btnShowToolbar.style.display = "none";
   });
+}
+
+// TTS UI bindings
+function populateVoices() {
+  if (!window.DOM.voiceSelect || !("speechSynthesis" in window)) return;
+  const sel = window.DOM.voiceSelect;
+  const prev = sel.value;
+  sel.innerHTML = "";
+  const voices = window.speechSynthesis.getVoices();
+  // Filter chỉ giọng Việt Nam
+  const viVoices = voices.filter((v) => v.lang && v.lang.toLowerCase().startsWith("vi"));
+  viVoices.forEach((v) => {
+    const opt = document.createElement("option");
+    opt.value = v.voiceURI;
+    opt.textContent = `${v.name} (${v.lang})`;
+    sel.appendChild(opt);
+  });
+  const want = window.AppConfig?.tts?.voiceURI;
+  if (want && viVoices.find((v) => v.voiceURI === want)) sel.value = want;
+  else if (prev && viVoices.find((v) => v.voiceURI === prev)) sel.value = prev;
+}
+
+function syncTTSToggleUI() {
+  if (!window.DOM.btnTTS) return;
+  const on = !!window.AppConfig?.tts?.enabled;
+  const icon = window.DOM.btnTTS.querySelector(".material-icons-round");
+  if (icon) icon.textContent = on ? "record_voice_over" : "voice_over_off";
+  window.DOM.btnTTS.title = on ? "Tắt TTS" : "Bật TTS";
+}
+
+if (window.DOM.btnTTS) {
+  window.DOM.btnTTS.addEventListener("click", () => {
+    const now = !(window.AppConfig?.tts?.enabled);
+    if (!window.AppConfig.tts) window.AppConfig.tts = { enabled: now, voiceURI: null };
+    window.AppConfig.tts.enabled = now;
+    if (window.tts && typeof window.tts.setEnabled === "function") tts.setEnabled(now);
+    if (typeof window.saveConfig === "function") saveConfig(window.AppConfig);
+    syncTTSToggleUI();
+  });
+  syncTTSToggleUI();
+}
+
+if (window.DOM.voiceSelect) {
+  window.DOM.voiceSelect.addEventListener("change", (e) => {
+    const uri = e.target.value;
+    if (window.tts && typeof window.tts.setVoiceByURI === "function") tts.setVoiceByURI(uri);
+  });
+  populateVoices();
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.addEventListener("voiceschanged", populateVoices);
+  }
 }

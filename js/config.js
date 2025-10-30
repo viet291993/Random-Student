@@ -18,4 +18,10 @@ window.AppConfig = {
 
   // Avatar visuals
   avatarSize: 96, // px
+
+  // Text-to-Speech
+  tts: {
+    enabled: true,
+    voiceURI: null, // preferred voice uri; null = auto
+  },
 };
