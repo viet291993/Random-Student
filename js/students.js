@@ -1,10 +1,9 @@
 // Inline default list; user can override in UI
 window.STUDENT_IMAGES = [
-  "Nguyễn Văn A.jpg",
-  "Trần Thị B.png",
-  "Lê C.jpeg",
-  "Phạm Dương E.jpg",
-  "Đỗ Thị F.png",
+  "Lê Đức Việt.jpg",
+  "Lê Hồng Phong.jpg",
+  "Nguyễn Ngọc Băng Giang.jpg",
+  "Hoàng Quốc Việt.jpg"
 ];
 
 // Get student image filenames (uses override from storage if exists)

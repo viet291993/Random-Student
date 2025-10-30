@@ -36,9 +36,11 @@
   display: block;
 }
 .avatar.highlight {
-  transform: scale(1.08);
+  transform: scale(1.12);
   border-color: #f59e0b;
-  box-shadow: 0 0 16px 4px rgba(245, 158, 11, 0.45);
+  border-width: 3px;
+  box-shadow: 0 0 22px 6px rgba(245, 158, 11, 0.6),
+    0 0 0 3px rgba(245, 158, 11, 0.25) inset;
 }
 .avatar.win {
   transform: scale(1.1);
@@ -94,7 +96,6 @@
   text-align: center;
   opacity: 1;
   transition: opacity 0.19s, filter 0.17s;
-  z-index: 10;
 }
 .avatar:hover + .name-tag {
   opacity: 1 !important;
