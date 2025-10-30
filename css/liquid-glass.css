@@ -1,0 +1,179 @@
+/* Core effect: liquid-glass, base for buttons, surfaces, etc. */
+.liquid-glass {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(2, 6, 23, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 -1px 0 rgba(2, 6, 23, 0.35);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  overflow: hidden;
+}
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: -40% -20% -40% -20%;
+  background: none;
+  opacity: 0.75;
+  mix-blend-mode: screen;
+  animation: liquid-flow 14s linear infinite;
+}
+.liquid-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .liquid-glass::before {
+    animation: none;
+  }
+}
+
+/* Customized range slider, switch, input, field styles (liquid glass appearance) */
+select.liquid-glass,
+.select.liquid-glass,
+.field select.liquid-glass {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 10px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 8px 20px rgba(2, 6, 23, 0.25);
+  backdrop-filter: blur(10px) saturate(150%);
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+  animation: liquid-bg-shift 16s linear infinite;
+  color: var(--fg);
+}
+select.liquid-glass:focus-visible {
+  outline: 2px solid rgba(56, 189, 248, 0.6);
+  outline-offset: 2px;
+}
+@keyframes liquid-bg-shift {
+  0% {
+    background-position: 0% 0%, 100% 0%, 50% 50%;
+    filter: saturate(110%);
+  }
+  50% {
+    background-position: 100% 100%, 0% 100%, 50% 50%;
+    filter: saturate(135%) hue-rotate(10deg);
+  }
+  100% {
+    background-position: 0% 0%, 100% 0%, 50% 50%;
+    filter: saturate(110%);
+  }
+}
+
+/* ----- LIQUID GLASS SWITCH (lip/convex bezel style) ----- */
+.switch.liquid-glass {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 50px;
+  height: 29px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 1.5px 9px 0 #38bdf81a inset, 0 2px 7px 0 #22c55e15 inset;
+  transition: background 0.24s, border-color 0.21s;
+  cursor: pointer;
+  outline: none;
+  overflow: hidden;
+}
+.switch.liquid-glass:checked {
+  background: linear-gradient(90deg, #38bdf8 0%, #22c55e 100%);
+}
+.switch.liquid-glass:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.switch.liquid-glass::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 99px;
+  background: linear-gradient(120deg, #fff 80%, #eafffd 100%);
+  box-shadow: 0 2.5px 12px 1.5px #38bdf850, 0 2px 4px #22c55e30 inset,
+    0 1.5px 7px 0 #fff3 inset;
+  border: 1.6px solid #c6f1fc90;
+  transition: transform 0.21s cubic-bezier(0.68, 0.19, 0.38, 0.96),
+    box-shadow 0.18s, background 0.14s;
+}
+.switch.liquid-glass:checked::after {
+  transform: translateX(20px);
+  box-shadow: 0 0 14px 2.5px #22c55e55, 0 3.5px 21px 2px #38bdf889,
+    0 3.5px 13px #89f9ef44;
+}
+.switch.liquid-glass:focus-visible {
+  outline: 2px solid #38bdf8;
+}
+
+/* Buttons and text inputs */
+.btn.liquid-glass {
+  position: relative;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: var(--fg);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 10px 18px rgba(2, 6, 23, 0.35);
+  backdrop-filter: blur(10px) saturate(150%);
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+}
+.btn.liquid-glass:hover {
+  filter: none;
+  transform: translateY(-1px);
+}
+.btn.liquid-glass:active {
+  transform: translateY(0);
+}
+.btn.liquid-glass:focus-visible {
+  outline: 2px solid rgba(56, 189, 248, 0.6);
+  outline-offset: 2px;
+}
+
+.field input[type="number"].liquid-glass,
+.field input[type="text"].liquid-glass,
+.field textarea.liquid-glass {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: var(--fg);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 8px 16px rgba(2, 6, 23, 0.25);
+  backdrop-filter: blur(8px) saturate(150%);
+  -webkit-backdrop-filter: blur(8px) saturate(150%);
+}
+.field input.liquid-glass:focus-visible,
+.field textarea.liquid-glass:focus-visible {
+  outline: 2px solid rgba(56, 189, 248, 0.6);
+  outline-offset: 2px;
+}
+
+.field-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.field-row span {
+  flex: 1 1 auto;
+}
+.field-row input[type="checkbox"].switch.liquid-glass {
+  flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  select.liquid-glass,
+  input[type="range"].liquid-glass,
+  input[type="checkbox"].switch.liquid-glass {
+    animation: none;
+    transition: none;
+  }
+}

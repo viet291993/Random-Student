@@ -1,0 +1,549 @@
+/* Button styles (primary, secondary, disabled, hover, etc.) */
+.btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--fg);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 9px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.btn:hover {
+  filter: brightness(1.12);
+  background: rgba(255, 255, 255, 0.12);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Avatar styles: avatar box, fallback, highlight, winner, etc. */
+/* Avatars */
+.avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(148, 163, 184, 0.35);
+  box-shadow: 0 0 0 0 rgba(250, 204, 21, 0);
+  transition: transform 120ms ease, box-shadow 120ms ease,
+    border-color 120ms ease;
+  background: rgba(148, 163, 184, 0.08);
+}
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.avatar.highlight {
+  transform: scale(1.08);
+  border-color: #f59e0b;
+  box-shadow: 0 0 16px 4px rgba(245, 158, 11, 0.45);
+}
+.avatar.win {
+  transform: scale(1.1);
+  border-color: transparent;
+  box-shadow: 0 0 22px 8px rgba(99, 102, 241, 0.55),
+    0 0 36px 12px rgba(16, 185, 129, 0.35);
+  position: relative;
+}
+.avatar.win::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    #22c55e,
+    #38bdf8,
+    #a78bfa,
+    #ef4444,
+    #22c55e
+  );
+  z-index: -1;
+  animation: spin 2.2s linear infinite;
+  filter: blur(0.5px);
+}
+.avatar-fallback {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(
+    135deg,
+    rgba(56, 189, 248, 0.25),
+    rgba(34, 197, 94, 0.25)
+  );
+  color: var(--fg);
+  font-weight: 600;
+  text-align: center;
+  padding: 6px;
+}
+.name-tag {
+  position: absolute;
+  min-width: 46px;
+  padding: 2.5px 8px 2.5px 8px;
+  background: rgba(30, 41, 59, 0.84);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 7px;
+  box-shadow: 0 2px 14px 1px rgba(30, 41, 59, 0.13);
+  pointer-events: none;
+  white-space: nowrap;
+  text-align: center;
+  opacity: 1;
+  transition: opacity 0.19s, filter 0.17s;
+  z-index: 10;
+}
+.avatar:hover + .name-tag {
+  opacity: 1 !important;
+}
+.circle-container .avatar {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid rgba(148, 163, 184, 0.35);
+}
+.circle-container .avatar[style*="width:28px"],
+.circle-container .avatar[style*="width: 28px"] {
+  border-width: 3px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Modal styles: modal layout, dialog, close, result display */
+/* Modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+.modal[hidden] {
+  display: none;
+}
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.7);
+  backdrop-filter: blur(2px);
+}
+.modal-dialog {
+  position: relative;
+  border-radius: 12px;
+  padding: 16px;
+  width: min(92vw, 420px);
+}
+.modal-close {
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  background: transparent;
+  color: var(--fg);
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+.modal-body {
+  display: grid;
+  gap: 12px;
+  place-items: center;
+}
+.result-image {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--highlight);
+  box-shadow: 0 0 28px rgba(253, 230, 138, 0.3);
+}
+.result-name {
+  margin: 8px 0 0;
+}
+.modal-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Side panel styles: config/shortcuts/students panel */
+/* Side panel */
+.side-panel {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+}
+.side-panel[hidden] {
+  display: none;
+}
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+}
+.panel-body {
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+}
+.field {
+  display: grid;
+  gap: 6px;
+}
+.panel-section-title {
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  color: var(--muted);
+  text-transform: uppercase;
+  padding-top: 4px;
+}
+.field input[type="number"],
+.field select {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: #0f172a;
+  color: var(--fg);
+}
+.field-inline {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  align-items: center;
+  gap: 8px;
+}
+.field textarea {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: #0f172a;
+  color: var(--fg);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  resize: vertical;
+}
+.shortcut-list {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
+}
+
+/* Board & layout classes for random list UI */
+/* Glass utilities */
+.glass {
+  background: rgba(17, 25, 40, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 24px rgba(2, 6, 23, 0.25);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+}
+.glass-strong {
+  background: rgba(17, 25, 40, 0.55);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+}
+.glass-button {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(6px) saturate(120%);
+  -webkit-backdrop-filter: blur(6px) saturate(120%);
+}
+
+.btn-group {
+  display: flex;
+  gap: 8px;
+}
+.btn-radio {
+  cursor: pointer;
+  padding: 9px 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background 0.2s, border 0.2s;
+}
+.btn-radio.selected,
+input[type="radio"]:checked + .btn-radio {
+  background: linear-gradient(90deg, #38bdf8 0%, #22c55e 100%);
+  color: #fff;
+  border-color: #38bdf8;
+}
+.btn-group input[type="radio"] {
+  display: none;
+}
+
+.panel-group {
+  background: rgba(17, 25, 40, 0.28);
+  border-radius: 14px;
+  box-shadow: 0 3px 16px 0 rgba(56, 189, 248, 0.035);
+  padding: 14px 14px 2px 14px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+.panel-group-title {
+  font-size: 13px;
+  font-weight: 650;
+  color: #38bdf8;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  margin-top: -1px;
+}
+
+.presentation-hide-toolbar .app-header,
+.presentation-hide-toolbar .toolbar {
+  display: none !important;
+}
+#btnShowToolbar {
+  box-shadow: 0 4px 24px 0 rgba(56, 189, 248, 0.15);
+  background: rgba(23, 35, 61, 0.93);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 22px;
+  border-radius: 24px;
+  opacity: 0.92;
+  transition: opacity 0.18s;
+}
+#btnShowToolbar:hover {
+  opacity: 1;
+}
+@media (max-width: 800px) {
+  #btnShowToolbar {
+    font-size: 14px;
+    padding: 10px 18px;
+  }
+}
+
+/* Toolbar styles: main toolbar, toolbar buttons, icons */
+/* Main toolbar */
+.main-toolbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 450;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 17px;
+  padding: 16px 0 10px 0;
+  background: linear-gradient(
+    0deg,
+    rgba(17, 25, 40, 0.78) 88%,
+    rgba(17, 25, 40, 0.09) 100%
+  );
+  box-shadow: 0 0 20px 8px rgba(30, 41, 59, 0.18);
+}
+.toolbar-btn {
+  background: rgba(37, 61, 92, 0.33);
+  border: none;
+  border-radius: 13px;
+  color: #38bdf8;
+  font-size: 27px;
+  width: 51px;
+  height: 51px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 14px 0 rgba(30, 41, 59, 0.16);
+  margin-right: 0;
+  cursor: pointer;
+  transition: background 0.16s, color 0.15s, filter 0.18s;
+  outline: none;
+  position: relative;
+}
+.toolbar-btn.btn-cta {
+  background: linear-gradient(135deg, #38bdf8, #22c55e);
+  color: #fff;
+  font-size: 29px;
+  font-weight: 700;
+  box-shadow: 0 4px 35px 0 rgba(56, 189, 248, 0.19);
+  border: 0;
+}
+.toolbar-btn:hover:not(:disabled) {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  filter: brightness(1.12);
+}
+.toolbar-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: rgba(30, 41, 59, 0.24);
+}
+.toolbar-btn .material-icons-round {
+  font-size: 2em !important;
+  line-height: 0;
+  color: #38bdf8;
+  transition: color 0.17s, filter 0.13s;
+  user-select: none;
+  pointer-events: none;
+  text-shadow: 0 2px 16px rgba(56, 189, 248, 0.08);
+}
+.toolbar-btn.btn-cta .material-icons-round {
+  color: #fff !important;
+}
+.toolbar-btn:hover:not(:disabled) .material-icons-round {
+  color: #22c55e !important;
+  filter: drop-shadow(0 1px 9px rgba(34, 197, 94, 0.19));
+}
+.toolbar-btn:disabled .material-icons-round {
+  color: #b2c6ca !important;
+  opacity: 0.56;
+}
+#btnShowToolbar .material-icons-round {
+  color: #38bdf8;
+  font-size: 1.7em !important;
+}
+
+/* Icon placeholder */
+.icon-play::before {
+  content: "\25B6";
+}
+.icon-undo::before {
+  content: "\21B6";
+}
+.icon-reset::before {
+  content: "\27F3";
+}
+.icon-fullscreen::before {
+  content: "\26F6";
+}
+.icon-settings::before {
+  content: "\2699";
+}
+.icon-users::before {
+  content: "\1F465";
+}
+.icon-shortcut::before {
+  content: "\2318";
+}
+.icon-hide::before {
+  content: "\2716";
+}
+.icon-show::before {
+  content: "\2630";
+}
+
+.glass-toolbar {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 38px;
+  z-index: 1001;
+  padding: 10px 26px;
+  min-width: 410px;
+  max-width: 90vw;
+  background: rgba(26, 32, 44, 0.9);
+  border-radius: 2.6em;
+  border: 1.3px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 6.5px 38px 0 rgba(56, 189, 248, 0.12),
+    0 2px 22px rgba(0, 0, 0, 0.19);
+  backdrop-filter: blur(17px) saturate(160%) brightness(1.06);
+  -webkit-backdrop-filter: blur(17px) saturate(160%) brightness(1.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  transition: background 0.21s;
+  border-bottom: 2.5px solid rgba(255, 255, 255, 0.09);
+  outline: none;
+}
+.glass-toolbar::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  top: 7px;
+  height: 13px;
+  border-radius: 19px;
+  filter: blur(4px);
+  opacity: 0.66;
+}
+.glass-toolbar .toolbar-btn {
+  background: transparent;
+  border: none;
+  outline: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  min-width: 30px;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.16s, filter 0.13s, box-shadow 0.16s;
+  margin: 0;
+  box-shadow: 0 2px 9px 0 rgba(24, 40, 80, 0.11) inset;
+  position: relative;
+}
+.glass-toolbar .toolbar-btn:active {
+  background: rgba(34, 197, 94, 0.09);
+  filter: brightness(1.14);
+}
+.glass-toolbar .toolbar-btn:hover:not(:disabled) {
+  background: rgba(56, 189, 248, 0.13);
+  box-shadow: 0 0 0 4.5px rgba(56, 189, 248, 0.07);
+}
+.glass-toolbar .toolbar-btn:disabled {
+  opacity: 0.43;
+  cursor: not-allowed;
+  filter: grayscale(0.24);
+}
+.glass-toolbar .toolbar-btn .material-icons-round {
+  font-size: 1.29em !important;
+  line-height: 0;
+  color: #cbd9fa;
+  transition: color 0.17s, filter 0.13s;
+  user-select: none;
+  pointer-events: none;
+  text-shadow: 0 3px 12px rgba(56, 189, 248, 0.085);
+}
+.glass-toolbar .toolbar-btn.btn-cta .material-icons-round {
+  color: #fff !important;
+  filter: drop-shadow(0 4px 16px #38bdf8cc);
+}
+.glass-toolbar .toolbar-btn:hover:not(:disabled) .material-icons-round {
+  color: #22c55e !important;
+  filter: drop-shadow(0 1px 14px rgba(34, 197, 94, 0.19));
+}
+.glass-toolbar .toolbar-btn:disabled .material-icons-round {
+  color: #b2c6ca !important;
+  opacity: 0.46;
+}
+#btnShowToolbar .material-icons-round {
+  color: #38bdf8;
+  font-size: 1.6em !important;
+}
+@media (max-width: 700px) {
+  .glass-toolbar {
+    gap: 4.5px;
+    padding: 4px 2px;
+  }
+  .glass-toolbar .toolbar-btn {
+    width: 29px;
+    height: 29px;
+    min-width: 21px;
+    min-height: 21px;
+  }
+  .glass-toolbar .toolbar-btn .material-icons-round {
+    font-size: 1em !important;
+  }
+}
+.presentation-hide-toolbar .glass-toolbar {
+  display: none !important;
+}
+
+/* Panel/grouping utilities: groups, section title, radio, etc. */

@@ -1,0 +1,4 @@
+/* Modularized stylesheet. Backwards-compat shim that aggregates split CSS files. */
+@import "css/base.css";
+@import "css/components.css";
+@import "css/liquid-glass.css";

@@ -1,0 +1,121 @@
+/* Root CSS variables for project colors/themes */
+:root {
+  --bg: #0f172a;
+  --fg: #e2e8f0;
+  --muted: #94a3b8;
+  --primary: #22c55e;
+  --secondary: #38bdf8;
+  --danger: #ef4444;
+  --highlight: #fde68a;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(
+    1200px 800px at 50% 0%,
+    #111827 0%,
+    var(--bg) 60%
+  );
+  color: var(--fg);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+    Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji",
+    "Segoe UI Emoji";
+}
+
+/* Main body/app layout and structure */
+.app-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.app-header h1 {
+  margin: 0;
+  text-align: center;
+  letter-spacing: 0.5px;
+  font-size: 22px;
+}
+
+.controls-left {
+  justify-self: start;
+}
+.controls-right {
+  justify-self: end;
+}
+
+.select {
+  padding: 6px 8px;
+  border-radius: 6px;
+}
+
+.app-main {
+  padding: 16px;
+}
+
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.toolbar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.label {
+  color: var(--muted);
+}
+.hint {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* Board, grid, circle, placement utilities */
+.board {
+  position: relative;
+  min-height: 60vh;
+  display: grid;
+  place-items: center;
+}
+
+.circle-container {
+  position: relative;
+  width: min(80vmin, 760px);
+  height: min(80vmin, 760px);
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
+  gap: 8px;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.name-tag {
+  position: absolute;
+  transform: translate(-50%, calc(-50% + 46px));
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+  width: 110px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Utility/Accessibility: hidden, label, hint, etc. */
+/* Utility */
+[hidden] {
+  display: none !important;
+}
