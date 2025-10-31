@@ -19,6 +19,9 @@ window.AppConfig = {
   // Avatar visuals
   avatarSize: 96, // px
 
+  // Grid layout
+  gridCols: null, // null => auto-fit; number => số item mỗi hàng
+
   // Text-to-Speech
   tts: {
     enabled: true,

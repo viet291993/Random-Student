@@ -83,7 +83,7 @@ body {
 /* Board, grid, circle, placement utilities */
 .board {
   position: relative;
-  min-height: 60vh;
+  min-height: 90vh;
   display: grid;
   place-items: center;
 }
@@ -98,21 +98,11 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
   gap: 8px;
-  width: 100%;
-  max-width: 1000px;
+  margin: 0 auto; /* căn giữa ngang */
+  align-content: start; /* tự co chiều cao theo số hàng */
 }
 
-.name-tag {
-  position: absolute;
-  transform: translate(-50%, calc(-50% + 46px));
-  font-size: 12px;
-  color: var(--muted);
-  text-align: center;
-  width: 110px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+/* name-tag đã được định nghĩa chi tiết trong components.css */
 
 /* Utility/Accessibility: hidden, label, hint, etc. */
 /* Utility */

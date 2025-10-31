@@ -47,6 +47,7 @@ window.bindPanels = function () {
     window.DOM.cfgSoundTick.checked = !!AppConfig.sound.tick;
     window.DOM.cfgSoundWin.checked = !!AppConfig.sound.win;
     window.DOM.cfgExcludeAfterPick.checked = !!AppConfig.excludeAfterPick;
+    if (window.DOM.cfgGridCols) window.DOM.cfgGridCols.value = AppConfig.gridCols ?? "";
     if (cfgLayoutRadios && cfgLayoutRadios.length)
       cfgLayoutRadios.forEach(
         (r) => (r.checked = r.value === AppConfig.layout)
@@ -74,6 +75,9 @@ window.bindPanels = function () {
     AppConfig.sound.tick = !!cfgSoundTick.checked;
     AppConfig.sound.win = !!cfgSoundWin.checked;
     AppConfig.excludeAfterPick = !!cfgExcludeAfterPick.checked;
+    // Lưu số cột grid (để trống => null)
+    const c = Number(window.DOM.cfgGridCols?.value);
+    AppConfig.gridCols = Number.isFinite(c) && c > 0 ? Math.min(50, Math.floor(c)) : null;
     AppConfig.layout =
       (cfgLayoutRadios && cfgLayoutRadios.find((r) => r.checked)?.value) ||
       AppConfig.layout;
@@ -83,9 +87,9 @@ window.bindPanels = function () {
     );
     AppConfig.avatarSize = avSize;
     uiAvatarSizePreview = null;
-    if (layoutSelect) layoutSelect.value = AppConfig.layout;
+    if (window.DOM.layoutSelect) window.DOM.layoutSelect.value = AppConfig.layout;
     saveConfig(AppConfig);
-    sidePanel.hidden = true;
+    window.DOM.sidePanel.hidden = true;
     if (!isSpinning) render();
   });
 
@@ -150,6 +154,7 @@ window.bindPanels = function () {
   });
 
   // ---- Live preview avatar size ----
+  let avatarSizeSaveTimeout = null;
   window.DOM.cfgAvatarSize?.addEventListener("input", () => {
     const v = clamp(
       toNumber(cfgAvatarSize.value, AppConfig.avatarSize),
@@ -159,7 +164,24 @@ window.bindPanels = function () {
     cfgAvatarSize.value = String(v);
     uiAvatarSizePreview = v;
     if (!isSpinning) render();
+    
+    // Auto-save to store after 500ms delay (debounce)
+    if (avatarSizeSaveTimeout) clearTimeout(avatarSizeSaveTimeout);
+    avatarSizeSaveTimeout = setTimeout(() => {
+      AppConfig.avatarSize = v;
+      saveConfig(AppConfig);
+      uiAvatarSizePreview = null; // Clear preview since it's now saved
+    }, 500);
   });
+
+  // ---- Live preview grid columns + autosave ----
+  const handleGridColsChange = () => {
+    const c = Number(window.DOM.cfgGridCols?.value);
+    AppConfig.gridCols = Number.isFinite(c) && c > 0 ? Math.min(50, Math.floor(c)) : null;
+    saveConfig(AppConfig);
+    if (!isSpinning) render();
+  };
+  window.DOM.cfgGridCols?.addEventListener("input", handleGridColsChange);
   window.DOM.cfgResetDefaults?.addEventListener("click", () => {
     cfgDuration.value = 4.0;
     cfgMaxTicksPerSec.value = 20;

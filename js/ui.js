@@ -22,6 +22,7 @@ window.DOM = {
   cfgExcludeAfterPick: document.getElementById("cfgExcludeAfterPick"),
   cfgLayout: document.getElementById("cfgLayout"),
   cfgAvatarSize: document.getElementById("cfgAvatarSize"),
+  cfgGridCols: document.getElementById("cfgGridCols"),
   studentsPanel: document.getElementById("studentsPanel"),
   studentsClose: document.getElementById("studentsClose"),
   cfgStudentList: document.getElementById("cfgStudentList"),
@@ -77,17 +78,29 @@ window.renderCircle = function (available) {
   const N = available.length;
   const CIRCLE_PADDING = 6;
   // Auto avatar size khi N lớn (ưu tiên lấy preview nếu có, sau đó giảm dần đến min)
+  // Đồng thời bảo đảm không chồng lắp giữa các avatar theo hình học của đường tròn
+  const containerMin = Math.min(
+    window.DOM.elCircle.clientWidth,
+    window.DOM.elCircle.clientHeight
+  );
   let avSize = window.uiAvatarSizePreview ?? AppConfig.avatarSize;
+  const minSize = 28;
+  const spacing = 4; // khoảng trống nhỏ giữa các avatar
+
+  // Ước lượng ban đầu theo tổng số phần tử
   if (N >= 18) avSize = Math.max(44, Math.round((220 / N) * 5));
-  if (N > 40) avSize = 28;
-  const radius =
-    Math.min(
-      window.DOM.elCircle.clientWidth,
-      window.DOM.elCircle.clientHeight
-    ) /
-      2 -
-    avSize / 2 -
-    CIRCLE_PADDING;
+  if (N > 40) avSize = minSize;
+
+  // Tính bán kính tạm để giới hạn kích thước không bị đè
+  let radius = containerMin / 2 - avSize / 2 - CIRCLE_PADDING;
+  if (N > 1) {
+    const maxSizeNoOverlap = Math.floor(
+      Math.max(minSize, 2 * radius * Math.sin(Math.PI / N) - spacing)
+    );
+    avSize = Math.min(avSize, maxSizeNoOverlap);
+    // Tính lại bán kính với kích thước đã giới hạn
+    radius = containerMin / 2 - avSize / 2 - CIRCLE_PADDING;
+  }
   const centerX = window.DOM.elCircle.clientWidth / 2;
   const centerY = window.DOM.elCircle.clientHeight / 2;
   const LABEL_EXTRA_OFFSET = 16;
@@ -141,6 +154,13 @@ window.renderCircle = function (available) {
 
 window.renderGrid = function (available) {
   window.DOM.elGrid.innerHTML = "";
+  // Áp dụng số cột nếu cấu hình, ngược lại dùng CSS mặc định (auto-fit)
+  if (Number.isFinite(AppConfig.gridCols) && AppConfig.gridCols > 0) {
+    const minCell = Math.max(48, Math.min(200, getAvatarSize()));
+    window.DOM.elGrid.style.gridTemplateColumns = `repeat(${Math.min(50, Math.floor(AppConfig.gridCols))}, minmax(${minCell}px, 1fr))`;
+  } else {
+    window.DOM.elGrid.style.gridTemplateColumns = "";
+  }
   available.forEach((s) => {
     const wrapper = document.createElement("div");
     wrapper.className = "avatar";
