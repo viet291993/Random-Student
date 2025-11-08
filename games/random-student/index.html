@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Random Gọi Tên</title>
+    <!-- Main CSS: base, components, glass effect -->
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/liquid-glass.css" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons+Round"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Main app section layout -->
+    <main class="app-main">
+      <!-- Toolbar: container for bottom toolbars/buttons -->
+      <section class="toolbar">
+        <div class="toolbar-row">
+          <!-- Main toolbar dưới cùng layout, dùng icon + tooltip -->
+        </div>
+      </section>
+      <!-- Floating button to re-show toolbar in presentation mode -->
+      <button
+        id="btnShowToolbar"
+        class="btn btn-secondary liquid-glass"
+        style="
+          position: fixed;
+          bottom: 14px;
+          left: 16px;
+          z-index: 500;
+          display: none;
+        "
+        title="Hiện thanh công cụ"
+      >
+        <span class="material-icons-round">menu</span>
+      </button>
+
+      <!-- Main board: where avatars/circle/grid renders -->
+      <section class="board">
+        <div id="circleContainer" class="circle-container"></div>
+        <div id="gridContainer" class="grid-container" hidden></div>
+      </section>
+    </main>
+
+    <!-- Glass toolbar: floating main bottom toolbar with actions -->
+    <div class="glass-toolbar">
+      <button
+        id="btnStart"
+        class="toolbar-btn btn-cta"
+        title="Bắt đầu/Dừng (Space)"
+      >
+        <span class="material-icons-round">play_arrow</span>
+      </button>
+      <button id="btnUndo" class="toolbar-btn" title="Hoàn tác (U)" disabled>
+        <span class="material-icons-round">undo</span>
+      </button>
+      <button id="btnReset" class="toolbar-btn" title="Đặt lại (R)">
+        <span class="material-icons-round">restart_alt</span>
+      </button>
+      <button id="btnFullscreen" class="toolbar-btn" title="Toàn màn hình (F)">
+        <span class="material-icons-round">fullscreen</span>
+      </button>
+      <button id="btnConfig" class="toolbar-btn" title="Cấu hình">
+        <span class="material-icons-round">settings</span>
+      </button>
+      <button id="btnStudents" class="toolbar-btn" title="Danh sách ảnh">
+        <span class="material-icons-round">group</span>
+      </button>
+      <button id="btnShortcuts" class="toolbar-btn" title="Phím tắt">
+        <span class="material-icons-round">keyboard</span>
+      </button>
+      <button id="btnTTS" class="toolbar-btn" title="Bật/Tắt TTS">
+        <span class="material-icons-round">record_voice_over</span>
+      </button>
+      <select id="voiceSelect" class="voice-select" title="Chọn giọng đọc"></select>
+      <button
+        id="btnBackToMenu"
+        class="toolbar-btn"
+        title="Quay lại menu (M)"
+      >
+        <span class="material-icons-round">home</span>
+      </button>
+      <button
+        id="btnHideToolbar"
+        class="toolbar-btn"
+        title="Ẩn thanh công cụ khi trình chiếu"
+      >
+        <span class="material-icons-round">visibility_off</span>
+      </button>
+    </div>
+
+    <!-- Result modal: show winner result after spin -->
+    <div id="resultModal" class="modal" hidden>
+      <div class="modal-backdrop"></div>
+      <div class="modal-dialog glass glass-strong">
+        <button id="modalClose" class="modal-close">×</button>
+        <div class="modal-body">
+          <div class="avatar win" style="width: 160px; height: 160px;">
+            <img id="resultImage" class="result-image" alt="selected" />
+          </div>
+          <h2 id="resultName" class="result-name"></h2>
+          <div class="modal-actions">
+            <button id="btnSpeak" class="btn btn-primary liquid-glass">
+              Đọc lại
+            </button>
+            <button id="btnOk" class="btn liquid-glass">Đóng</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Config panel: user settings/config UI -->
+    <div id="configPanel" class="side-panel glass glass-strong" hidden>
+      <div class="panel-header">
+        <h3>Cấu hình</h3>
+        <button id="configClose" class="modal-close">×</button>
+      </div>
+      <div class="panel-body">
+        <!-- Giao diện: layout & kích thước -->
+        <div class="panel-group">
+          <div class="panel-group-title">Giao diện</div>
+          <label class="field">
+            <span>Layout mặc định</span>
+            <div id="cfgLayoutGroup" class="btn-group">
+              <input
+                type="radio"
+                id="layoutCircle"
+                name="cfgLayout"
+                value="circle"
+              />
+              <label for="layoutCircle" class="btn btn-radio liquid-glass"
+                >Circle</label
+              >
+              <input
+                type="radio"
+                id="layoutGrid"
+                name="cfgLayout"
+                value="grid"
+              />
+              <label for="layoutGrid" class="btn btn-radio liquid-glass"
+                >Grid</label
+              >
+            </div>
+          </label>
+          <label class="field">
+            <span>Kích thước avatar (px)</span>
+            <input
+              id="cfgAvatarSize"
+              type="number"
+              min="48"
+              max="200"
+              step="4"
+              class="liquid-glass"
+            />
+          </label>
+          <label class="field">
+            <span>Số item mỗi hàng</span>
+            <input
+              id="cfgGridCols"
+              type="number"
+              min="1"
+              max="50"
+              step="1"
+              class="liquid-glass"
+              placeholder="Tự động"
+            />
+          </label>
+        </div>
+        <!-- Thời gian & Tốc độ -->
+        <div class="panel-group">
+          <div class="panel-group-title">Thời gian & tốc độ</div>
+          <label class="field">
+            <span>Thời gian quay (giây)</span>
+            <input
+              id="cfgDuration"
+              type="number"
+              min="1"
+              max="20"
+              step="0.1"
+              class="liquid-glass"
+            />
+          </label>
+          <label class="field">
+            <span>Tốc độ tối đa (ô/giây)</span>
+            <input
+              id="cfgMaxTicksPerSec"
+              type="number"
+              min="5"
+              max="40"
+              step="1"
+              class="liquid-glass"
+            />
+          </label>
+        </div>
+        <!-- Âm thanh -->
+        <div class="panel-group">
+          <div class="panel-group-title">Âm thanh</div>
+          <label class="field field-row">
+            <span>Âm tick</span>
+            <input
+              id="cfgSoundTick"
+              type="checkbox"
+              class="switch liquid-glass"
+            />
+          </label>
+          <label class="field field-row">
+            <span>Âm win</span>
+            <input
+              id="cfgSoundWin"
+              type="checkbox"
+              class="switch liquid-glass"
+            />
+          </label>
+        </div>
+        <!-- Loại trừ -->
+        <div class="panel-group">
+          <div class="panel-group-title">Loại trừ</div>
+          <label class="field field-row">
+            <span>Loại khỏi danh sách sau khi được chọn</span>
+            <input
+              id="cfgExcludeAfterPick"
+              type="checkbox"
+              class="switch liquid-glass"
+            />
+          </label>
+        </div>
+        <div class="panel-actions">
+          <button id="cfgResetDefaults" class="btn btn-secondary liquid-glass">
+            Khôi phục mặc định
+          </button>
+        </div>
+
+        <div class="panel-actions">
+          <button id="cfgSave" class="btn btn-primary liquid-glass">Lưu</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shortcuts panel (reference keybinds user can use) -->
+    <div id="shortcutsPanel" class="side-panel glass glass-strong" hidden>
+      <div class="panel-header">
+        <h3>Phím tắt</h3>
+        <button id="shortcutsClose" class="modal-close">×</button>
+      </div>
+      <div class="panel-body">
+        <ul class="shortcut-list">
+          <li><b>Space</b>: Bắt đầu</li>
+          <li><b>U</b>: Hoàn tác</li>
+          <li><b>R</b>: Đặt lại</li>
+          <li><b>F</b>: Toàn màn hình</li>
+          <li><b>C</b>: Mở Cấu hình</li>
+          <li><b>D</b>: Mở Danh sách</li>
+          <li><b>M</b>: Quay lại menu</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Student list import/export (panel for danh sách ảnh) -->
+    <div id="studentsPanel" class="side-panel glass glass-strong" hidden>
+      <div class="panel-header">
+        <h3>Danh sách</h3>
+        <button id="studentsClose" class="modal-close">×</button>
+      </div>
+      <div class="panel-body">
+        <label class="field">
+          <textarea
+            id="cfgStudentList"
+            rows="30"
+            placeholder="Ví dụ:
+Nguyễn Văn A
+Trần Thị B.png"
+          ></textarea>
+          <div class="field-hint">
+            <small>
+              Số mục: <b id="studentCount">0</b>
+            </small>
+          </div>
+          <div class="panel-actions">
+            <button id="cfgStudentsApply" class="btn btn-primary liquid-glass">
+              Áp dụng
+            </button>
+          </div>
+          <div class="field-hint">
+            <!-- Plain helper text to make usage easier -->
+            <small>
+              - Mỗi dòng nhập <b>một</b> tên. Có thể kèm phần mở rộng (.jpg/.png/.jpeg...) hoặc chỉ nhập <i>tên</i>.<br />
+              - Nếu trùng với ảnh trong thư mục <code>images/</code> (ví dụ: <code>images/Nguyễn Văn A.jpg</code>) thì hiển thị ảnh.<br />
+              - Có thể dán trực tiếp danh sách từ Excel/Google Sheets (một cột, mỗi ô một dòng).
+            </small>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Script includes: import JS modules in dependency order -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/sound.js"></script>
+    <script src="js/tts.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/students.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/effects.js"></script>
+    <script src="js/spin.js"></script>
+    <script src="js/panels.js"></script>
+    <script src="js/shortcuts.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+  <!-- All comments in English per request -->
+</html>

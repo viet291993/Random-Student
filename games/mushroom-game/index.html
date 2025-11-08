@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Trò Chơi Cây Nấm</title>
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/mushroom.css" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons+Round"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <main class="app-main">
+      <!-- Header -->
+      <header class="app-header">
+        <div class="controls-left">
+          <button
+            id="btnBackToMenu"
+            class="btn btn-secondary"
+            title="Quay lại menu (M)"
+          >
+            <span class="material-icons-round">home</span>
+          </button>
+        </div>
+        <h1>Trò Chơi Cây Nấm</h1>
+        <div class="controls-right">
+          <button id="btnFullscreen" class="btn btn-secondary" title="Toàn màn hình (F)">
+            <span class="material-icons-round">fullscreen</span>
+          </button>
+          <button id="btnConfig" class="btn btn-secondary" title="Cài đặt">
+            <span class="material-icons-round">settings</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Game board -->
+      <section class="game-board">
+        <div class="game-instruction">
+          <p id="gameInstructionText">Chọn các cây nấm có từ chứa vần <strong id="instructionRhyme">ôn/ôt</strong></p>
+        </div>
+        <div id="mushroomGrid" class="mushroom-grid">
+          <!-- Mushrooms will be dynamically loaded here -->
+        </div>
+        <div class="game-progress">
+          <div class="progress-item">
+            <span class="material-icons-round progress-icon">check_circle</span>
+            <span class="progress-label">Đã chọn:</span>
+            <span class="progress-value" id="progressCount">0</span>
+            <span class="progress-total">/<span id="totalCount">12</span></span>
+          </div>
+          <div class="progress-item">
+            <span class="material-icons-round progress-icon correct-icon">done</span>
+            <span class="progress-value correct-value" id="correctProgressCount">0</span>
+          </div>
+          <div class="progress-item">
+            <span class="material-icons-round progress-icon wrong-icon">close</span>
+            <span class="progress-value wrong-value" id="wrongProgressCount">0</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Result notification -->
+      <div id="resultNotification" class="result-notification" hidden>
+        <div class="notification-content">
+          <span id="resultIcon" class="result-icon"></span>
+          <span id="resultText" class="result-text"></span>
+        </div>
+      </div>
+
+      <!-- Completion modal -->
+      <div id="completionModal" class="completion-modal" hidden>
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2>Hoàn thành!</h2>
+            <button id="modalClose" class="modal-close" title="Đóng">
+              <span class="material-icons-round">close</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="completion-stats">
+              <div class="stat-item">
+                <span class="material-icons-round stat-icon correct-icon">check_circle</span>
+                <div class="stat-content">
+                  <div class="stat-label">Đúng</div>
+                  <div class="stat-value correct-value" id="completionCorrect">0</div>
+                </div>
+              </div>
+              <div class="stat-item">
+                <span class="material-icons-round stat-icon wrong-icon">cancel</span>
+                <div class="stat-content">
+                  <div class="stat-label">Sai</div>
+                  <div class="stat-value wrong-value" id="completionWrong">0</div>
+                </div>
+              </div>
+              <div class="stat-item">
+                <span class="material-icons-round stat-icon">star</span>
+                <div class="stat-content">
+                  <div class="stat-label">Tổng</div>
+                  <div class="stat-value" id="completionTotal">0</div>
+                </div>
+              </div>
+            </div>
+            <div class="completion-score">
+              <div class="score-label">Điểm số</div>
+              <div class="score-value" id="completionScore">0%</div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button id="btnPlayAgain" class="btn btn-primary liquid-glass">
+              <span class="material-icons-round">refresh</span>
+              <span>Chơi lại</span>
+            </button>
+            <button id="btnBackToMenuFromModal" class="btn btn-secondary liquid-glass">
+              <span class="material-icons-round">home</span>
+              <span>Về menu</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Config panel -->
+    <div id="configPanel" class="side-panel glass glass-strong" hidden>
+      <div class="panel-header">
+        <div class="panel-header-content">
+          <span class="material-icons-round panel-header-icon">settings</span>
+          <h3>Cài đặt</h3>
+        </div>
+        <button id="configClose" class="modal-close" title="Đóng">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+      <div class="panel-body">
+        <!-- Game Settings Section -->
+        <div class="panel-group">
+          <div class="panel-group-header">
+            <span class="material-icons-round panel-group-icon">tune</span>
+            <div class="panel-group-title">Cài đặt trò chơi</div>
+          </div>
+          <div class="panel-group-content">
+            <label class="field">
+              <span class="field-label">
+                <span class="material-icons-round field-icon">text_fields</span>
+                Nhập vần cần tìm
+              </span>
+              <input
+                id="cfgTargetRhyme"
+                type="text"
+                placeholder="Ví dụ: ôn/ôt, an/at, en/et"
+                class="liquid-glass field-input"
+              />
+              <div class="field-hint">
+                <small>Nhập vần mà học sinh cần tìm (có thể nhập nhiều vần cách nhau bằng dấu /)</small>
+              </div>
+            </label>
+            <label class="field">
+              <span class="field-label">
+                <span class="material-icons-round field-icon">format_size</span>
+                Cỡ chữ trên nấm
+              </span>
+              <input
+                id="cfgFontSize"
+                type="range"
+                min="12"
+                max="28"
+                value="18"
+                step="1"
+                class="liquid-glass field-input"
+              />
+              <div class="field-hint field-hint-inline">
+                <small>Cỡ chữ: <b id="fontSizeValue">18</b>px</small>
+              </div>
+            </label>
+            <div class="settings-row">
+              <label class="field field-row">
+                <span class="field-label-row">
+                  <span class="material-icons-round field-icon-small">shuffle</span>
+                  Xáo trộn từ khi bắt đầu
+                </span>
+                <input
+                  id="cfgShuffleWords"
+                  type="checkbox"
+                  class="switch liquid-glass"
+                />
+              </label>
+              <label class="field field-row">
+                <span class="field-label-row">
+                  <span class="material-icons-round field-icon-small">volume_up</span>
+                  Bật âm thanh
+                </span>
+                <input
+                  id="cfgSoundEnabled"
+                  type="checkbox"
+                  class="switch liquid-glass"
+                />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Word List Section -->
+        <div class="panel-group">
+          <div class="panel-group-header">
+            <span class="material-icons-round panel-group-icon">list</span>
+            <div class="panel-group-title">Danh sách từ</div>
+          </div>
+          <div class="panel-group-content">
+            <div class="word-list-container">
+              <div class="word-list-section">
+                <label class="field">
+                  <span class="word-list-label correct-label">
+                    <span class="label-icon">✅</span>
+                    <span class="label-text">Từ đúng</span>
+                    <span class="label-rhyme">(có vần <span id="rhymeDisplay">ôn/ôt</span>)</span>
+                  </span>
+                  <textarea
+                    id="cfgCorrectWords"
+                    rows="8"
+                    placeholder="Mỗi dòng một từ, ví dụ:&#10;thôn xóm&#10;cồn cát&#10;con chồn&#10;cột đèn"
+                    class="liquid-glass word-list-textarea"
+                  ></textarea>
+                  <div class="field-hint field-hint-inline">
+                    <small>Số từ đúng: <b id="correctCount" class="count-correct">0</b></small>
+                  </div>
+                </label>
+              </div>
+              <div class="word-list-section">
+                <label class="field">
+                  <span class="word-list-label wrong-label">
+                    <span class="label-icon">❌</span>
+                    <span class="label-text">Từ sai</span>
+                    <span class="label-rhyme">(không có vần <span id="rhymeDisplayWrong">ôn/ôt</span>)</span>
+                  </span>
+                  <textarea
+                    id="cfgWrongWords"
+                    rows="8"
+                    placeholder="Mỗi dòng một từ, ví dụ:&#10;con lợn&#10;bàn&#10;dế mèn&#10;nón"
+                    class="liquid-glass word-list-textarea"
+                  ></textarea>
+                  <div class="field-hint field-hint-inline">
+                    <small>Số từ sai: <b id="wrongCount" class="count-wrong">0</b></small>
+                  </div>
+                </label>
+              </div>
+            </div>
+            <div class="word-list-summary">
+              <div class="summary-item">
+                <span class="material-icons-round summary-icon">check_circle</span>
+                <span class="summary-label">Tổng số từ:</span>
+                <span class="summary-value" id="wordCount">0</span>
+              </div>
+            </div>
+            <div class="panel-actions panel-actions-inline">
+              <button id="cfgWordsApply" class="btn btn-primary liquid-glass" title="Áp dụng cài đặt và khởi động lại game">
+                <span class="material-icons-round">check</span>
+                <span>Áp dụng</span>
+              </button>
+              <button id="cfgWordsReset" class="btn btn-secondary liquid-glass">
+                <span class="material-icons-round">restore</span>
+                <span>Khôi phục mặc định</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/sound.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
+

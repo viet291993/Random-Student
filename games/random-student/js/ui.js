@@ -42,6 +42,7 @@ window.DOM = {
   resultName: document.getElementById("resultName"),
   btnHideToolbar: document.getElementById("btnHideToolbar"),
   btnShowToolbar: document.getElementById("btnShowToolbar"),
+  btnBackToMenu: document.getElementById("btnBackToMenu"),
   studentCount: document.getElementById("studentCount"),
 };
 
@@ -276,6 +277,13 @@ if (window.DOM.btnShowToolbar) {
   window.DOM.btnShowToolbar.addEventListener("click", () => {
     document.body.classList.remove("presentation-hide-toolbar");
     window.DOM.btnShowToolbar.style.display = "none";
+  });
+}
+
+// Event back to menu
+if (window.DOM.btnBackToMenu) {
+  window.DOM.btnBackToMenu.addEventListener("click", () => {
+    window.location.href = "../../index.html";
   });
 }
 

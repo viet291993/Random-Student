@@ -32,6 +32,10 @@ document.addEventListener("keydown", (e) => {
     case "D":
       window.DOM.btnStudents?.click();
       break;
+    case "m":
+    case "M":
+      if (window.DOM.btnBackToMenu) window.DOM.btnBackToMenu.click();
+      break;
     default:
       break;
   }
