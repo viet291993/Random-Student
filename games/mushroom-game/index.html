@@ -6,6 +6,7 @@
     <title>Trò Chơi Cây Nấm</title>
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/mushroom.css" />
+    <link rel="stylesheet" href="../../css/theme-ui.css" />
     <link
       href="https://fonts.googleapis.com/icon?family=Material+Icons+Round"
       rel="stylesheet"
@@ -26,6 +27,9 @@
         </div>
         <h1>Trò Chơi Cây Nấm</h1>
         <div class="controls-right">
+          <button id="btnTheme" class="btn btn-secondary" title="Chọn theme">
+            <span class="material-icons-round">palette</span>
+          </button>
           <button id="btnFullscreen" class="btn btn-secondary" title="Toàn màn hình (F)">
             <span class="material-icons-round">fullscreen</span>
           </button>
@@ -268,12 +272,61 @@
       </div>
     </div>
 
+    <!-- Theme Selector Modal -->
+    <div id="themeModal" class="theme-modal" hidden>
+      <div class="theme-modal-backdrop"></div>
+      <div class="theme-modal-dialog">
+        <div class="theme-modal-header">
+          <h3 class="theme-modal-title">Chọn Theme</h3>
+          <button id="themeModalClose" class="theme-modal-close">×</button>
+        </div>
+        <div class="theme-grid" id="themeGrid">
+          <!-- Themes will be dynamically loaded here -->
+        </div>
+        <div id="themeCustomBtn" class="theme-custom-btn">
+          <span class="material-icons-round">tune</span>
+          <span class="theme-custom-btn-text">Tùy chỉnh</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Theme Editor Modal -->
+    <div id="themeEditorModal" class="theme-editor-modal" hidden>
+      <div class="theme-editor-backdrop"></div>
+      <div class="theme-editor-dialog">
+        <div class="theme-editor-header">
+          <h3 class="theme-editor-title">Tùy chỉnh Theme</h3>
+          <button id="themeEditorClose" class="theme-modal-close">×</button>
+        </div>
+        <div class="theme-preview-box" id="themePreviewBox">
+          <div class="theme-preview-text">Xem trước Theme</div>
+          <button class="theme-preview-button">Ví dụ nút</button>
+        </div>
+        <div class="theme-color-fields" id="themeColorFields">
+          <!-- Color pickers will be dynamically loaded here -->
+        </div>
+        <div class="theme-editor-actions">
+          <button id="themeEditorReset" class="theme-editor-btn theme-editor-btn-danger" style="display: none;">
+            <span class="material-icons-round">delete</span>
+            Reset về mặc định
+          </button>
+          <button id="themeEditorCancel" class="theme-editor-btn">Hủy</button>
+          <button id="themeEditorSave" class="theme-editor-btn theme-editor-btn-primary">
+            <span class="material-icons-round">save</span>
+            Lưu theme
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../../js/theme.js"></script>
     <script src="js/config.js"></script>
     <script src="js/storage.js"></script>
     <script src="js/sound.js"></script>
     <script src="js/game.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/main.js"></script>
+    <script src="../../js/theme-ui.js"></script>
   </body>
 </html>
 
